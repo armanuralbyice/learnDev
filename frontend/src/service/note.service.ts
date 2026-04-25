@@ -1,0 +1,16 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../environment';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class NoteService {
+  private apiUrl = environment.apiBaseUrl + '/note/create';
+
+  constructor(private http: HttpClient) {}
+
+  createNote(note: any) {
+    return this.http.post(this.apiUrl, note);
+  }
+}
