@@ -21,10 +21,19 @@ pipeline {
             }
         }
 
+        stage('Trust EC2 Host') {
+            steps {
+                sh """
+                mkdir -p ~/.ssh
+                ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
+                """
+            }
+        }
+
         stage('Copy to EC2') {
             steps {
                 sh """
-                scp -r * ${EC2_USER}@${EC2_HOST}:${APP_DIR}
+                scp -o StrictHostKeyChecking=no -r * ${EC2_USER}@${EC2_HOST}:${APP_DIR}
                 """
             }
         }
@@ -32,23 +41,14 @@ pipeline {
         stage('Deploy on EC2') {
             steps {
                 sh """
-                ssh ${EC2_USER}@${EC2_HOST} '
+                ssh ${EC2_USER}@${EC2_HOST} "
                     cd ${APP_DIR} &&
                     docker compose down || true &&
                     docker compose up --build -d
-                '
+                "
                 """
             }
         }
-        stage('Trust EC2 Host') {
-            steps {
-        sh """
-        mkdir -p ~/.ssh
-        ssh-keyscan -H 3.107.235.199 >> ~/.ssh/known_hosts
-        """
-    }
-}
-
     }
 
     post {
