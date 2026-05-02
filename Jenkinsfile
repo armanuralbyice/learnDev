@@ -38,6 +38,17 @@ pipeline {
             }
         }
 
+        stage('Docker Cleanup on EC2') {
+            steps {
+                sh """
+                ssh ${EC2_USER}@${EC2_HOST} "
+                    sudo docker system prune -a -f --volumes || true &&
+                    sudo docker builder prune -a -f || true
+                "
+                """
+            }
+        }
+
         stage('Deploy on EC2') {
             steps {
                 sh """
