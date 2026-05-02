@@ -40,6 +40,14 @@ pipeline {
                 """
             }
         }
+        stage('Trust EC2 Host') {
+            steps {
+        sh """
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 3.107.235.199 >> ~/.ssh/known_hosts
+        """
+    }
+}
 
     }
 
