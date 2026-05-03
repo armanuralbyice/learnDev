@@ -13,24 +13,13 @@ services:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
     build: ./backend
     container_name: backend
     restart: always
     depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-      DB_NAME: notes_db
-      DB_USER: root
-      DB_PASS: root
+      - db
     ports:
       - "8080:8080"
 
@@ -38,10 +27,18 @@ services:
     build: ./frontend
     container_name: frontend
     restart: always
-    depends_on:
-      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
     ports:
       - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
 
 volumes:
   db_data:
