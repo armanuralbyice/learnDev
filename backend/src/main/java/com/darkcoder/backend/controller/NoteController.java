@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/note")
 @AllArgsConstructor
 public class NoteController {
 
     private final NoteService noteService;
 
-    @PostMapping("/note/create")
+    @PostMapping("/create")
     public Response createNote (@RequestBody NoteDto noteDto){
         return noteService.createNote(noteDto);
     }

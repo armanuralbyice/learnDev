@@ -6,7 +6,7 @@ import { environment } from '../environment';
   providedIn: 'root',
 })
 export class NoteService {
-  private apiUrl = environment.apiBaseUrl + '/note/create';
+  private apiUrl = environment.apiBaseUrl + '/create';
 
   constructor(private http: HttpClient) {}
 
